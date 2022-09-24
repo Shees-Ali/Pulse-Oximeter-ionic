@@ -1,5 +1,7 @@
 {
   "name": "Bluetooth-poc-ionic",
-  "integrations": {},
+  "integrations": {
+    "capacitor": {}
+  },
   "type": "angular"
 }
