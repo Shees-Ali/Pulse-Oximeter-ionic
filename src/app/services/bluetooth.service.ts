@@ -42,6 +42,47 @@ export class BluetoothService {
       console.log('SERVICES', services);
       console.log('connected to device', device);
 
+      const result = await BleClient.read(
+        device.deviceId,
+        "0000180a-0000-1000-8000-00805f9b34fb",
+        "00002a23-0000-1000-8000-00805f9b34fb"
+      );
+      console.log('body sensor location', result.getUint8(0));
+
+      // const battery = await BleClient.read(
+      //   device.deviceId,
+      //   this.BATTERY_SERVICE,
+      //   this.BATTERY_CHARACTERISTIC
+      // );
+      // console.log('battery level', battery.getUint8(0));
+
+      // await BleClient.write(
+      //   device.deviceId,
+      //   this.POLAR_PMD_SERVICE,
+      //   this.POLAR_PMD_CONTROL_POINT,
+      //   numbersToDataView([1, 0])
+      // );
+      // console.log('written [1, 0] to control point');
+
+      await BleClient.startNotifications(
+        device.deviceId,
+        this.HEART_RATE_SERVICE,
+        this.HEART_RATE_MEASUREMENT_CHARACTERISTIC,
+        (value) => {
+          console.log('current heart rate', this.parseHeartRate(value));
+        }
+      );
+
+      // disconnect after 10 sec
+      // setTimeout(async () => {
+      //   await BleClient.stopNotifications(
+      //     device.deviceId,
+      //     this.HEART_RATE_SERVICE,
+      //     this.HEART_RATE_MEASUREMENT_CHARACTERISTIC
+      //   );
+      //   await BleClient.disconnect(device.deviceId);
+      //   console.log('disconnected from device', device);
+      // }, 10000);
     } catch (error) {
       console.error(error);
     }
